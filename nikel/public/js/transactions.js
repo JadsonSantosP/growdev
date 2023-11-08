@@ -1,12 +1,12 @@
-const myModal = new bootstrap.Modal("#transaction-modal");
+const myModalElement = document.querySelector("#transaction-modal");
+const myModal = new bootstrap.Modal(myModalElement);
 let logged = sessionStorage.getItem("logged");
 const session = localStorage.getItem("session");
-
 let data = {
     transactions: []
 };
 
-document.getElementById("buttom-logout").addEventListener("click", logout);
+document.getElementById("logout-button").addEventListener("click", logout);
 
 //ADICIONAR LANÇAMENTO
 document.getElementById("transaction-form").addEventListener("submit", function(e) {
@@ -27,19 +27,20 @@ document.getElementById("transaction-form").addEventListener("submit", function(
 
     getTransactions();
 
-    alert("Lançamento adicionado com sucesso.");
+    alert("Lançamento adicionado com sucesso!");
 });
 
 checkLogged();
 
 function checkLogged() {
     if(session) {
-        sessionStorage.setItem("logged", session);
-        logged = session;
+       sessionStorage.setItem("logged", session);
+       logged = session;
     }
+ 
     if(!logged) {
-        window.location.href = "index.html";
-        return;
+       window.location.href = "index.html";
+       return;
     }
 
     const dataUser = localStorage.getItem(logged);
@@ -50,16 +51,9 @@ function checkLogged() {
     getTransactions();
 }
 
-function logout(){
-    sessionStorage.removeItem("logged");
-    localStorage.removeItem("session");
-
-    window.location.href = "index.html"
-}
-
 function getTransactions(){
     const transactions = data.transactions;
-    let transactionsHtml = ``;
+    let transactionsHTML = ``;
 
     if(transactions.length) {
         transactions.forEach((item) => {
@@ -69,20 +63,27 @@ function getTransactions(){
                 type = "Saída";
             }
 
-            transactionsHtml += `
-            <tr>
-            <th scope="row">${item.date}</th>
-            <td>${item.value.toFixed(2)}</td>
-            <td>${type}</td>
-            <td>${item.description}</td>
-          </tr>
-          `
-        })
+            transactionsHTML += `
+                <tr>
+                    <th scope="row">${item.date}</th>
+                    <td>${item.value.toFixed(2)}</td>
+                    <td>${type}</td>
+                    <td>${item.description}</td>
+                </tr>
+            `
+        });
     }
 
-    document.getElementById("transactions-list").innerHTML = transactionsHtml;
-};
+    document.getElementById("transactions-list").innerHTML = transactionsHTML;
+}
 
 function saveData(data) {
     localStorage.setItem(data.login, JSON.stringify(data));
+}
+
+function logout(){
+    sessionStorage.removeItem("logged");
+    localStorage.removeItem("session");
+
+    window.location.href = "index.html";
 }
